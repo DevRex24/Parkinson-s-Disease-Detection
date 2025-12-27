@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Parkinson's Disease Assessment System
 
 A comprehensive multimodal system for Parkinson's Disease assessment using MRI images, voice recordings, and clinical data.
@@ -204,3 +205,7 @@ For issues and questions:
 2. Review console logs
 3. Run test scripts
 4. Create an issue with detailed information 
+=======
+# Parkinson-s-Disease-Detection
+AI/ML Project
+>>>>>>> 349b0c2e5ee146c09cc6055db90a40e5fcbed6f3
