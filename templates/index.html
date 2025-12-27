@@ -1,0 +1,2045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parkinson's Assessment System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #4facfe;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .upload-area {
+            border: 3px dashed #4facfe;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            border-color: #00f2fe;
+            background: rgba(79, 172, 254, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .upload-area.dragover {
+            border-color: #00f2fe;
+            background: rgba(79, 172, 254, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #4facfe;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .preview-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .preview-image {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .camera-section {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .camera-container {
+            flex: 1;
+        }
+
+        .camera-preview {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .camera-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #51cf66, #40c057);
+            color: white;
+        }
+
+        .voice-recorder {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.1));
+            border-radius: 15px;
+            border: 2px solid rgba(79, 172, 254, 0.2);
+        }
+
+        .audio-input-options {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .record-button {
+            width: auto;
+            min-width: 120px;
+            height: auto;
+            min-height: 50px;
+            border-radius: 25px;
+            border: none;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+            padding: 12px 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .record-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .record-button.recording {
+            background: linear-gradient(135deg, #51cf66, #40c057);
+            animation: pulse 1.5s infinite;
+        }
+
+        .upload-audio-btn {
+            padding: 12px 24px;
+            border: 2px solid #4facfe;
+            background: white;
+            color: #4facfe;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .upload-audio-btn:hover {
+            background: #4facfe;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .audio-drop-area {
+            border: 3px dashed #4facfe;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin: 20px 0;
+            background: rgba(79, 172, 254, 0.05);
+        }
+
+        .audio-drop-area:hover {
+            border-color: #00f2fe;
+            background: rgba(79, 172, 254, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .audio-drop-area.dragover {
+            border-color: #00f2fe;
+            background: rgba(79, 172, 254, 0.15);
+            transform: scale(1.02);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .form-input {
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .form-select {
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.05), rgba(0, 242, 254, 0.05));
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .submit-btn {
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .status-message-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .status-close-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: inherit;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .status-close-btn:hover {
+            opacity: 1;
+        }
+
+        .status-success {
+            background: rgba(81, 207, 102, 0.1);
+            color: #40c057;
+            border: 1px solid rgba(81, 207, 102, 0.3);
+        }
+
+        .status-error {
+            background: rgba(255, 107, 107, 0.1);
+            color: #ee5a52;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .status-info {
+            background: rgba(79, 172, 254, 0.1);
+            color: #4facfe;
+            border: 1px solid rgba(79, 172, 254, 0.3);
+        }
+
+        .audio-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .time-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: #4facfe;
+            font-weight: bold;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .mode-btn {
+            padding: 10px 20px;
+            border: 2px solid #4facfe;
+            background: white;
+            color: #4facfe;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mode-btn.active {
+            background: #4facfe;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .camera-section {
+                flex-direction: column;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .results-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .results-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .results-icon {
+            font-size: 2rem;
+            color: #4facfe;
+            margin-right: 10px;
+        }
+
+        .results-timestamp {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .result-card {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            color: #333;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .risk-indicator {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .risk-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #e9ecef;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .risk-percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .risk-label {
+            display: block;
+            margin-top: 10px;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .risk-description {
+            text-align: center;
+            margin-top: 10px;
+            color: #666;
+        }
+
+        .severity-card {
+            text-align: center;
+        }
+
+        .severity-metrics {
+            margin-top: 20px;
+        }
+
+        .severity-item {
+            margin-bottom: 10px;
+        }
+
+        .severity-label {
+            font-weight: 600;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        .severity-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .severity-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .severity-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .patient-card {
+            text-align: center;
+        }
+
+        .patient-info {
+            margin-top: 20px;
+        }
+
+        .info-row {
+            margin-bottom: 10px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        .info-value {
+            color: #666;
+        }
+
+        .precautions-card {
+            text-align: center;
+        }
+
+        .precautions-content {
+            margin-top: 20px;
+        }
+
+        .precaution-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .precaution-text {
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .results-actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .secondary-btn {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e9ecef;
+        }
+
+        .secondary-btn:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .danger-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .danger-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .results-disclaimer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .disclaimer-text {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1> Parkinson's Assessment System</h1>
+            <p>Advanced AI-powered diagnostic assessment using multimodal analysis</p>
+        </div>
+
+        <div class="content">
+            <!-- Assessment Mode Selection -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon"></div>
+                    Assessment Mode
+                </div>
+                <div class="mode-selector">
+                    <button class="mode-btn active" data-mode="both">Both (MRI + Voice)</button>
+                    <button class="mode-btn" data-mode="image">MRI Only</button>
+                    <button class="mode-btn" data-mode="voice">Voice Only</button>
+                </div>
+            </div>
+<!-- Live Camera Capture -->
+<div class="section" id="camera-section">
+    <div class="section-title">
+        <div class="section-icon"></div>
+        Live Patient Photo Capture
+    </div>
+    <div class="camera-section">
+        <div class="camera-container">
+            <video id="camera-preview" class="camera-preview" autoplay muted></video>
+            <canvas id="camera-canvas" style="display: none;"></canvas>
+            <div class="camera-controls">
+                <button class="btn btn-primary" id="start-camera">
+                     Start Camera
+                </button>
+                <button class="btn btn-success" id="capture-photo" style="display: none;">
+                     Capture Photo
+                </button>
+                <button class="btn btn-danger" id="stop-camera" style="display: none;">
+                    Stop Camera
+                </button>
+            </div>
+        </div>
+        <div class="preview-container" id="camera-photo-preview"></div>
+    </div>
+</div>
+ <!-- Clinical Information -->
+ <div class="section">
+    <div class="section-title">
+        <div class="section-icon"></div>
+        Clinical Patient Information
+    </div>
+    <form id="clinical-form">
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label" for="patient-name">Full Name *</label>
+                <input type="text" id="patient-name" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="patient-age">Age *</label>
+                <input type="number" id="patient-age" class="form-input" min="1" max="120" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="patient-gender">Gender *</label>
+                <select id="patient-gender" class="form-select" required>
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="tremor-severity">Tremor Severity (1-10) *</label>
+                <input type="range" id="tremor-severity" class="form-input" min="1" max="10" value="5" oninput="document.getElementById('tremor-value').textContent=this.value">
+                <div style="text-align: center; margin-top: 5px;">
+                    <span>Mild (1)</span>
+                    <span style="font-weight: bold; margin: 0 10px;" id="tremor-value">5</span>
+                    <span>Severe (10)</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="symptoms-duration">Symptoms Duration (months) *</label>
+                <input type="number" id="symptoms-duration" class="form-input" min="0" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="medication">Current Medication</label>
+                <input type="text" id="medication" class="form-input" placeholder="e.g., Levodopa, Carbidopa">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="family-history">Family History *</label>
+                <select id="family-history" class="form-select" required>
+                    <option value="">Select Option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                    <option value="Unknown">Unknown</option>
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
+            <!-- MRI Image Upload -->
+            <div class="section" id="mri-section">
+                <div class="section-title">
+                    <div class="section-icon"></div>
+                    MRI Image Upload
+                </div>
+                <div class="upload-area" id="mri-upload-area">
+                    <div class="upload-icon"></div>
+                    <div class="upload-text">Drop MRI image here or click to browse</div>
+                    <div class="upload-subtext">Supports: JPG, PNG, DICOM formats</div>
+                    <input type="file" id="mri-file-input" class="file-input" accept="image/*,.dcm,.dicom">
+                </div>
+                <div class="preview-container" id="mri-preview"></div>
+            </div>
+
+            
+
+            <!-- Voice Recording -->
+            <div class="section" id="voice-section">
+                <div class="section-title">
+                    <div class="section-icon"></div>
+                    Voice Recording Assessment
+                </div>
+                <div class="voice-recorder">
+                    <p>Please read the following text aloud for voice analysis:</p>
+                    <div style="font-style: italic; margin: 20px 0; padding: 20px; background: rgba(255,255,255,0.7); border-radius: 10px;">
+                        Just say aaah for 5 seconds<br>
+                        Just be loud and clear<br>
+                        Just make steady tone<br>
+                        Make sure you are in a quiet environment<br>
+                        The AI will analyze your voice and provide a diagnosis
+                    </div>
+                    
+                    <!-- Audio Input Options -->
+                    <div class="audio-input-options">
+                        <button class="record-button" id="record-btn"> Record Audio</button>
+                        <button class="upload-audio-btn" id="upload-audio-btn"> Upload WAV File</button>
+                    </div>
+                    
+                    <!-- Drag and Drop Area for Audio -->
+                    <div id="audio-drop-area" class="audio-drop-area" style="display: none;">
+                        <div class="upload-icon"></div>
+                        <div class="upload-text">Drop WAV file here or click to browse</div>
+                        <div class="upload-subtext">Supports: WAV format only</div>
+                    </div>
+                    
+                    <input type="file" id="audio-file-input" class="file-input" accept=".wav,audio/wav" style="display: none;">
+                    
+                    <div class="time-display" id="time-display">00:00</div>
+                    <div class="audio-controls" id="audio-controls" style="display: none;">
+                        <button class="btn btn-primary" id="play-btn"> Play</button>
+                        <button class="btn btn-secondary" id="pause-btn"> Pause</button>
+                        <button class="btn btn-danger" id="re-record-btn"> Re-record</button>
+                    </div>
+                    <audio id="audio-playback" controls style="display: none; margin-top: 15px; width: 100%;"></audio>
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-secondary" id="test-audio-btn" onclick="testAudioRecording()"> Test Audio Recording</button>
+                    </div>
+                </div>
+            </div>
+
+           
+
+            <!-- Submit Section -->
+            <div class="submit-section">
+                <div class="progress-bar" id="progress-bar" style="display: none;">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div id="status-message" class="status-message-container"></div>
+                <button class="submit-btn" id="submit-assessment">
+                     Submit Assessment
+                </button>
+                <button class="btn btn-secondary" id="reset-progress" style="display: none; margin-top: 10px;">
+                     Reset Progress
+                </button>
+            </div>
+
+            <!-- Enhanced Results Display -->
+            <div class="results-section" id="results-section" style="display: none;">
+                <div class="results-container">
+                    <div class="results-header">
+                        <h2>Assessment Results</h2>
+                        <div class="results-timestamp" id="results-timestamp"></div>
+                    </div>
+                    
+                    <div class="results-grid">
+                        <!-- Risk Level Card -->
+                        <div class="result-card risk-card" id="risk-card">
+                            <div class="card-header">
+                                <h3>Risk Assessment</h3>
+                            </div>
+                            <div class="risk-indicator" id="risk-indicator">
+                                <div class="risk-circle" id="risk-circle">
+                                    <div class="risk-percentage" id="risk-percentage">0%</div>
+                                </div>
+                                <div class="risk-label" id="risk-label">Low Risk</div>
+                            </div>
+                            <div class="risk-description" id="risk-description">
+                                Based on multimodal analysis including MRI, voice patterns, and clinical data.
+                            </div>
+                        </div>
+
+                        <!-- Severity Analysis Card -->
+                        <div class="result-card severity-card">
+                            <div class="card-header">
+                                <h3>Severity Analysis</h3>
+                            </div>
+                            <div class="severity-metrics">
+                                <div class="severity-item">
+                                    <div class="severity-label">Motor Symptoms</div>
+                                    <div class="severity-bar">
+                                        <div class="severity-fill" id="motor-severity" style="width: 0%"></div>
+                                    </div>
+                                    <div class="severity-value" id="motor-value">0%</div>
+                                </div>
+                                <div class="severity-item">
+                                    <div class="severity-label">Voice Changes</div>
+                                    <div class="severity-bar">
+                                        <div class="severity-fill" id="voice-severity" style="width: 0%"></div>
+                                    </div>
+                                    <div class="severity-value" id="voice-value">0%</div>
+                                </div>
+                                <div class="severity-item">
+                                    <div class="severity-label">Clinical Factors</div>
+                                    <div class="severity-bar">
+                                        <div class="severity-fill" id="clinical-severity" style="width: 0%"></div>
+                                    </div>
+                                    <div class="severity-value" id="clinical-value">0%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Patient Information Card -->
+                        <div class="result-card patient-card">
+                            <div class="card-header">
+                                <h3>Patient Information</h3>
+                            </div>
+                            <div class="patient-info" id="patient-info">
+                                <div class="info-row">
+                                    <span class="info-label">Patient ID:</span>
+                                    <span class="info-value" id="patient-id">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Name:</span>
+                                    <span class="info-value" id="patient-name-result">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Age:</span>
+                                    <span class="info-value" id="patient-age-result">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Assessment Date:</span>
+                                    <span class="info-value" id="assessment-date">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Precautions Card -->
+                        <div class="result-card precautions-card">
+                            <div class="card-header">
+                                <h3>Precautions & Recommendations</h3>
+                            </div>
+                            <div class="precautions-content" id="precautions-content">
+                                <div class="precaution-item">
+                                    <div class="precaution-text">
+                                        <strong>Immediate Action:</strong> Schedule consultation with a neurologist for comprehensive evaluation.
+                                    </div>
+                                </div>
+                                <div class="precaution-item">
+                                    <div class="precaution-text">
+                                        <strong>Monitoring:</strong> Track symptoms daily and maintain a symptom diary.
+                                    </div>
+                                </div>
+                                <div class="precaution-item">
+                                    <div class="precaution-text">
+                                        <strong>Medication:</strong> Do not start any medication without medical supervision.
+                                    </div>
+                                </div>
+                                <div class="precaution-item">
+                                    <div class="precaution-text">
+                                        <strong>Lifestyle:</strong> Maintain regular exercise and healthy diet as recommended by your doctor.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="results-actions">
+                        <button class="action-btn primary-btn" onclick="printResults()">
+                             Print Report
+                        </button>
+                        <button class="action-btn secondary-btn" onclick="downloadResults()">
+                             Download PDF
+                        </button>
+                        <button class="action-btn danger-btn" onclick="resetResults()">
+                             New Assessment
+                        </button>
+                    </div>
+
+                    <!-- Disclaimer -->
+                    <div class="results-disclaimer">
+                        <div class="disclaimer-text">
+                            <strong>Important Disclaimer:</strong> This assessment is for screening purposes only and should not replace professional medical diagnosis. 
+                            The results are based on AI analysis and may not be 100% accurate. Always consult with qualified healthcare professionals for proper diagnosis and treatment.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let mediaRecorder;
+        let audioChunks = [];
+        let recordingStartTime;
+        let recordingInterval;
+        let cameraStream;
+        let currentMode = 'both';
+        let mriData = null;
+        let audioData = null;
+        let cameraPhotoData = null;
+
+        // DOM elements
+        const mriUploadArea = document.getElementById('mri-upload-area');
+        const mriFileInput = document.getElementById('mri-file-input');
+        const mriPreview = document.getElementById('mri-preview');
+        const recordBtn = document.getElementById('record-btn');
+        const timeDisplay = document.getElementById('time-display');
+        const audioControls = document.getElementById('audio-controls');
+        const audioPlayback = document.getElementById('audio-playback');
+        const startCameraBtn = document.getElementById('start-camera');
+        const capturePhotoBtn = document.getElementById('capture-photo');
+        const stopCameraBtn = document.getElementById('stop-camera');
+        const cameraPreview = document.getElementById('camera-preview');
+        const cameraCanvas = document.getElementById('camera-canvas');
+        const cameraPhotoPreview = document.getElementById('camera-photo-preview');
+        const submitBtn = document.getElementById('submit-assessment');
+        const progressBar = document.getElementById('progress-bar');
+        const progressFill = document.getElementById('progress-fill');
+        const statusMessage = document.getElementById('status-message');
+
+        // Mode selection
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentMode = btn.dataset.mode;
+                updateSectionVisibility();
+            });
+        });
+
+        function updateSectionVisibility() {
+            const mriSection = document.getElementById('mri-section');
+            const voiceSection = document.getElementById('voice-section');
+            const cameraSection = document.getElementById('camera-section');
+
+            if (currentMode === 'voice') {
+                mriSection.style.display = 'none';
+                cameraSection.style.display = 'none';
+                voiceSection.style.display = 'block';
+            } else if (currentMode === 'image') {
+                mriSection.style.display = 'block';
+                cameraSection.style.display = 'block';
+                voiceSection.style.display = 'none';
+            } else {
+                mriSection.style.display = 'block';
+                cameraSection.style.display = 'block';
+                voiceSection.style.display = 'block';
+            }
+        }
+
+        // MRI Image Upload
+        mriUploadArea.addEventListener('click', () => mriFileInput.click());
+        mriUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            mriUploadArea.classList.add('dragover');
+        });
+        mriUploadArea.addEventListener('dragleave', () => {
+            mriUploadArea.classList.remove('dragover');
+        });
+        mriUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            mriUploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleMRIFile(files[0]);
+            }
+        });
+
+        mriFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleMRIFile(e.target.files[0]);
+            }
+        });
+
+        function handleMRIFile(file) {
+            if (!file.type.startsWith('image/')) {
+                showStatus('Please select a valid image file.', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                mriData = e.target.result;
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'preview-image';
+                mriPreview.innerHTML = '';
+                mriPreview.appendChild(img);
+                showStatus('MRI image uploaded successfully!', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Camera functionality
+        startCameraBtn.addEventListener('click', startCamera);
+        capturePhotoBtn.addEventListener('click', capturePhoto);
+        stopCameraBtn.addEventListener('click', stopCamera);
+
+        async function startCamera() {
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 640, height: 480 } 
+                });
+                cameraPreview.srcObject = cameraStream;
+                startCameraBtn.style.display = 'none';
+                capturePhotoBtn.style.display = 'inline-flex';
+                stopCameraBtn.style.display = 'inline-flex';
+                showStatus('Camera started successfully!', 'success');
+            } catch (error) {
+                showStatus('Error accessing camera: ' + error.message, 'error');
+            }
+        }
+
+        function capturePhoto() {
+            const canvas = cameraCanvas;
+            const video = cameraPreview;
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+            
+            cameraPhotoData = canvas.toDataURL('image/jpeg', 0.8);
+            
+            const img = document.createElement('img');
+            img.src = cameraPhotoData;
+            img.className = 'preview-image';
+            cameraPhotoPreview.innerHTML = '';
+            cameraPhotoPreview.appendChild(img);
+            
+            showStatus('Photo captured successfully!', 'success');
+        }
+
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraPreview.srcObject = null;
+                startCameraBtn.style.display = 'inline-flex';
+                capturePhotoBtn.style.display = 'none';
+                stopCameraBtn.style.display = 'none';
+                showStatus('Camera stopped.', 'info');
+            }
+        }
+
+        // Voice Recording
+        recordBtn.addEventListener('click', toggleRecording);
+        
+        // Audio file upload
+        const uploadAudioBtn = document.getElementById('upload-audio-btn');
+        const audioFileInput = document.getElementById('audio-file-input');
+        const audioDropArea = document.getElementById('audio-drop-area');
+        
+        uploadAudioBtn.addEventListener('click', () => {
+            if (audioDropArea.style.display === 'none') {
+                audioDropArea.style.display = 'block';
+                uploadAudioBtn.textContent = ' Cancel Upload';
+            } else {
+                audioDropArea.style.display = 'none';
+                uploadAudioBtn.textContent = ' Upload WAV File';
+            }
+        });
+        
+        audioFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleAudioFile(e.target.files[0]);
+            }
+        });
+        
+        // Drag and drop functionality for audio
+        audioDropArea.addEventListener('click', () => {
+            audioFileInput.click();
+        });
+        
+        audioDropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            audioDropArea.classList.add('dragover');
+        });
+        
+        audioDropArea.addEventListener('dragleave', () => {
+            audioDropArea.classList.remove('dragover');
+        });
+        
+        audioDropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            audioDropArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleAudioFile(files[0]);
+            }
+        });
+        
+        function handleAudioFile(file) {
+            console.log('Processing audio file:', file.name, 'Size:', file.size, 'Type:', file.type);
+            
+            // Validate file type
+            if (!file.type.includes('wav') && !file.name.toLowerCase().endsWith('.wav')) {
+                showStatus('Please select a valid WAV audio file.', 'error');
+                return;
+            }
+            
+            // Validate file size (max 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                showStatus('Audio file is too large. Please select a file smaller than 10MB.', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                audioData = e.target.result;
+                audioPlayback.src = e.target.result;
+                audioPlayback.style.display = 'block';
+                audioControls.style.display = 'flex';
+                
+                console.log('Audio file loaded successfully');
+                console.log('Audio data length:', audioData.length);
+                console.log('Audio data URL prefix:', audioData.substring(0, 50));
+                
+                showStatus(`WAV file "${file.name}" uploaded successfully!`, 'success');
+                
+                // Hide drop area and reset upload button
+                audioDropArea.style.display = 'none';
+                uploadAudioBtn.textContent = ' Upload WAV File';
+                
+                // Reset file input
+                audioFileInput.value = '';
+            };
+            
+            reader.onerror = (error) => {
+                console.error('Error reading audio file:', error);
+                showStatus('Error reading audio file. Please try again.', 'error');
+                audioFileInput.value = '';
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        async function toggleRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                console.log('Stopping recording...');
+                mediaRecorder.stop();
+                return;
+            }
+
+            // Check if browser supports MediaRecorder
+            if (!window.MediaRecorder) {
+                showStatus('Your browser does not support audio recording. Please use a modern browser.', 'error');
+                return;
+            }
+
+            try {
+                console.log('Requesting microphone access...');
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        sampleRate: 8000,
+                        channelCount: 1,
+                        echoCancellation: true,
+                        noiseSuppression: true
+                    } 
+                });
+                
+                console.log('Microphone access granted');
+                
+                // Use a supported audio format
+                const mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 
+                                MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : 
+                                'audio/wav';
+                
+                console.log('Using audio format:', mimeType);
+                mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                        console.log('Audio chunk received, size:', event.data.size);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    console.log('Recording stopped, processing audio...');
+                    if (audioChunks.length === 0) {
+                        showStatus('No audio data recorded. Please try again.', 'error');
+                        recordBtn.classList.remove('recording');
+                        recordBtn.textContent = 'Record Audio';
+                        clearInterval(recordingInterval);
+                        stream.getTracks().forEach(track => track.stop());
+                        return;
+                    }
+                    
+                    const audioBlob = new Blob(audioChunks, { type: mimeType });
+                    console.log('Audio blob size:', audioBlob.size, 'bytes');
+                    console.log('Audio blob type:', audioBlob.type);
+                    
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        audioData = reader.result;
+                        audioPlayback.src = reader.result;
+                        audioPlayback.style.display = 'block';
+                        audioControls.style.display = 'flex';
+                        console.log('Audio data length:', audioData.length);
+                        console.log('Audio data URL prefix:', audioData.substring(0, 50));
+                        showStatus('Voice recording completed!', 'success');
+                    };
+                    reader.onerror = (error) => {
+                        console.error('Error reading audio file:', error);
+                        showStatus('Error processing audio recording.', 'error');
+                    };
+                    reader.readAsDataURL(audioBlob);
+                    
+                    recordBtn.classList.remove('recording');
+                    recordBtn.textContent = ' Record Audio';
+                    clearInterval(recordingInterval);
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.onerror = (event) => {
+                    console.error('MediaRecorder error:', event);
+                    showStatus('Error during recording: ' + event.error, 'error');
+                    recordBtn.classList.remove('recording');
+                    recordBtn.textContent = ' Record Audio';
+                    clearInterval(recordingInterval);
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start(1000); // Collect data every second
+                recordBtn.classList.add('recording');
+                recordBtn.textContent = 'Stop Recording';
+                
+                recordingStartTime = Date.now();
+                recordingInterval = setInterval(updateRecordingTime, 1000);
+                
+                showStatus('Recording started... Speak clearly into your microphone.', 'info');
+            } catch (error) {
+                console.error('Recording error:', error);
+                if (error.name === 'NotAllowedError') {
+                    showStatus('Microphone access denied. Please allow microphone access and try again.', 'error');
+                } else if (error.name === 'NotFoundError') {
+                    showStatus('No microphone found. Please connect a microphone and try again.', 'error');
+                } else {
+                    showStatus('Error accessing microphone: ' + error.message, 'error');
+                }
+            }
+        }
+
+        function updateRecordingTime() {
+            const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            timeDisplay.textContent = `${minutes}:${seconds}`;
+        }
+
+        // Audio controls
+        document.getElementById('play-btn').addEventListener('click', () => {
+            audioPlayback.play();
+        });
+
+        document.getElementById('pause-btn').addEventListener('click', () => {
+            audioPlayback.pause();
+        });
+
+        document.getElementById('re-record-btn').addEventListener('click', () => {
+            audioData = null;
+            audioPlayback.style.display = 'none';
+            audioControls.style.display = 'none';
+            timeDisplay.textContent = '00:00';
+            showStatus('Ready to record or upload audio again.', 'info');
+            
+            // Reset record button
+            recordBtn.classList.remove('recording');
+            recordBtn.textContent = ' Record Audio';
+            
+            // Hide drop area and reset upload button
+            audioDropArea.style.display = 'none';
+            uploadAudioBtn.textContent = ' Upload WAV File';
+            
+            // Reset file input
+            audioFileInput.value = '';
+            
+            // Stop any ongoing recording
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+        });
+
+        // Form submission
+        submitBtn.addEventListener('click', submitAssessment);
+        
+        // Reset progress button
+        const resetProgressBtn = document.getElementById('reset-progress');
+        resetProgressBtn.addEventListener('click', () => {
+            progressBar.style.display = 'none';
+            progressFill.style.width = '0%';
+            resetProgressBtn.style.display = 'none';
+            showStatus('Progress reset. Ready for new assessment.', 'info');
+        });
+
+        async function submitAssessment() {
+            // Validate required fields
+            const name = document.getElementById('patient-name').value.trim();
+            const age = document.getElementById('patient-age').value;
+            const gender = document.getElementById('patient-gender').value;
+            const tremor = document.getElementById('tremor-severity').value;
+            const symptoms = document.getElementById('symptoms-duration').value;
+            const medication = document.getElementById('medication').value.trim() || 'None';
+            const history = document.getElementById('family-history').value;
+
+            if (!name || !age || !gender || !symptoms || !history) {
+                showStatus('Please fill in all required clinical information fields.', 'error');
+                return;
+            }
+
+            // Validate mode-specific requirements
+            if (currentMode === 'both' || currentMode === 'image') {
+                if (!mriData && !cameraPhotoData) {
+                    showStatus('Please upload an MRI image or capture a photo.', 'error');
+                    return;
+                }
+            }
+
+            if (currentMode === 'both' || currentMode === 'voice') {
+                if (!audioData) {
+                    showStatus('Please record a voice sample.', 'error');
+                    return;
+                }
+                console.log('Audio data for submission:', {
+                    length: audioData.length,
+                    prefix: audioData.substring(0, 100),
+                    hasData: !!audioData
+                });
+            }
+
+            // Prepare data
+            const assessmentData = {
+                mode: currentMode,
+                mri: mriData || cameraPhotoData,
+                audio: audioData,
+                clinical: {
+                    name: name,
+                    age: parseInt(age),
+                    gender: gender,
+                    tremor: parseInt(tremor),
+                    symptoms: parseInt(symptoms),
+                    medication: medication,
+                    history: history
+                }
+            };
+
+            console.log('Submitting assessment data:', {
+                mode: assessmentData.mode,
+                hasAudio: !!assessmentData.audio,
+                hasMRI: !!assessmentData.mri,
+                clinicalData: assessmentData.clinical
+            });
+
+            // Submit assessment
+            submitBtn.disabled = true;
+            progressBar.style.display = 'block';
+            showStatus('Processing assessment...', 'info');
+
+            try {
+                // Simulate progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 10;
+                    progressFill.style.width = progress + '%';
+                    if (progress >= 90) {
+                        clearInterval(progressInterval);
+                    }
+                }, 200);
+
+                const response = await fetch('/api/assess', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(assessmentData)
+                });
+
+                clearInterval(progressInterval);
+                progressFill.style.width = '100%';
+
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('Response data:', result);
+
+                if (result.success) {
+                    const probability = (result.prediction * 100).toFixed(1);
+                    const riskLevel = probability > 70 ? 'High' : probability > 40 ? 'Moderate' : 'Low';
+                    
+                    // Display enhanced results
+                    displayEnhancedResults(result, probability, riskLevel);
+                    
+                    // Show success status
+                    showStatus(`Assessment completed successfully! Patient ID: ${result.patient_id}`, 'success');
+                } else {
+                    console.error('Assessment failed:', result.error);
+                    showStatus('Assessment failed: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                showStatus('Network error: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                // Show reset progress button
+                resetProgressBtn.style.display = 'inline-flex';
+                // Progress bar will remain visible until manually reset
+                // setTimeout(() => {
+                //     progressBar.style.display = 'none';
+                //     progressFill.style.width = '0%';
+                // }, 2000);
+            }
+        }
+
+        function showStatus(message, type) {
+            statusMessage.innerHTML = `
+                <div class="status-message status-${type}">
+                    ${message}
+                    <button class="status-close-btn" onclick="this.parentElement.parentElement.style.display='none'">×</button>
+                </div>
+            `;
+            statusMessage.style.display = 'block';
+            
+            // Status messages will remain visible until manually dismissed
+            // if (type === 'success' || type === 'info') {
+            //     setTimeout(() => {
+            //         statusMessage.style.display = 'none';
+            //     }, 5000);
+            // }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            updateSectionVisibility();
+            showStatus('System ready. Please fill in the assessment form.', 'info');
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                submitAssessment();
+            }
+            if (e.key === 'Escape') {
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    toggleRecording();
+                }
+                if (cameraStream) {
+                    stopCamera();
+                }
+            }
+        });
+
+        // Auto-save functionality (stores in memory only)
+        const formInputs = document.querySelectorAll('.form-input, .form-select');
+        formInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                // Could implement auto-save to temporary storage here
+                // Note: Not using localStorage as per constraints
+            });
+        });
+
+        // Responsive image handling
+        function handleImageResize(img) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Maximum dimensions
+            const maxWidth = 800;
+            const maxHeight = 600;
+            
+            let { width, height } = img;
+            
+            // Calculate new dimensions
+            if (width > height) {
+                if (width > maxWidth) {
+                    height = (height * maxWidth) / width;
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width = (width * maxHeight) / height;
+                    height = maxHeight;
+                }
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            ctx.drawImage(img, 0, 0, width, height);
+            return canvas.toDataURL('image/jpeg', 0.8);
+        }
+
+        // Error handling for unsupported browsers
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            showStatus('Your browser does not support camera/microphone access. Some features may not work.', 'error');
+            startCameraBtn.disabled = true;
+            recordBtn.disabled = true;
+        }
+
+        // File size validation
+        function validateFileSize(file, maxSizeMB = 10) {
+            const maxSize = maxSizeMB * 1024 * 1024; // Convert to bytes
+            if (file.size > maxSize) {
+                showStatus(`File size too large. Please select a file smaller than ${maxSizeMB}MB.`, 'error');
+                return false;
+            }
+            return true;
+        }
+
+        // Enhanced MRI file handler with validation
+        function handleMRIFile(file) {
+            if (!validateFileSize(file, 10)) {
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                showStatus('Please select a valid image file (JPG, PNG, etc.).', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    // Resize if needed and store
+                    mriData = handleImageResize(img);
+                    
+                    const previewImg = document.createElement('img');
+                    previewImg.src = mriData;
+                    previewImg.className = 'preview-image';
+                    mriPreview.innerHTML = '';
+                    mriPreview.appendChild(previewImg);
+                    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'btn btn-danger';
+                    removeBtn.innerHTML = ' Remove';
+                    removeBtn.style.marginTop = '10px';
+                    removeBtn.onclick = () => {
+                        mriData = null;
+                        mriPreview.innerHTML = '';
+                        showStatus('MRI image removed.', 'info');
+                    };
+                    mriPreview.appendChild(removeBtn);
+                    
+                    showStatus('MRI image processed and uploaded successfully!', 'success');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Add tooltips for better UX
+        const tooltips = {
+            'tremor-severity': 'Rate the severity of tremor symptoms from 1 (very mild) to 10 (very severe)',
+            'symptoms-duration': 'How long have symptoms been present (in months)?',
+            'medication': 'List current medications for Parkinson\'s or related conditions',
+            'family-history': 'Does the patient have a family history of Parkinson\'s disease?'
+        };
+
+        Object.keys(tooltips).forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.title = tooltips[id];
+            }
+        });
+
+        function testAudioRecording() {
+            console.log('=== Audio Recording Test ===');
+            console.log('Current audio data:', {
+                hasData: !!audioData,
+                length: audioData ? audioData.length : 0,
+                prefix: audioData ? audioData.substring(0, 50) : 'None'
+            });
+            
+            // Test microphone access
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    console.log(' Microphone access granted');
+                    console.log('Audio tracks:', stream.getAudioTracks().map(t => t.label));
+                    
+                    // Test MediaRecorder support
+                    const mimeTypes = ['audio/webm', 'audio/mp4', 'audio/wav'];
+                    const supportedTypes = mimeTypes.filter(type => MediaRecorder.isTypeSupported(type));
+                    console.log('Supported audio formats:', supportedTypes);
+                    
+                    // Stop the test stream
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    if (audioData) {
+                        // Test sending to backend
+                        testAudioBackend();
+                    } else {
+                        console.log(' No audio data available. Please record first.');
+                        showStatus('Please record audio first, then test.', 'info');
+                    }
+                })
+                .catch(error => {
+                    console.error(' Microphone access denied:', error);
+                    showStatus('Microphone access denied. Please allow microphone access.', 'error');
+                });
+        }
+        
+        async function testAudioBackend() {
+            console.log('Testing audio with backend...');
+            
+            const testData = {
+                audio: audioData
+            };
+            
+            try {
+                const response = await fetch('/api/test-audio', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const result = await response.json();
+                console.log('Backend test result:', result);
+                
+                if (result.success) {
+                    showStatus(' Audio test successful! Check console for details.', 'success');
+                } else {
+                    showStatus(' Audio test failed: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Backend test error:', error);
+                showStatus(' Backend test error: ' + error.message, 'error');
+            }
+        }
+
+        // Enhanced Results Display Functions
+        function displayEnhancedResults(result, probability, riskLevel) {
+            const resultsSection = document.getElementById('results-section');
+            
+            // Set timestamp
+            document.getElementById('results-timestamp').textContent = new Date().toLocaleString();
+            
+            // Update risk indicator
+            updateRiskIndicator(probability, riskLevel);
+            
+            // Update patient information
+            updatePatientInfo(result);
+            
+            // Update severity analysis
+            updateSeverityAnalysis(result, probability);
+            
+            // Update precautions based on risk level
+            updatePrecautions(riskLevel);
+            
+            // Show results section with animation
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+            
+            // Animate the results
+            setTimeout(() => {
+                animateResults();
+            }, 100);
+        }
+
+        function updateRiskIndicator(probability, riskLevel) {
+            const riskCircle = document.getElementById('risk-circle');
+            const riskPercentage = document.getElementById('risk-percentage');
+            const riskLabel = document.getElementById('risk-label');
+            
+            // Set colors based on risk level
+            let backgroundColor, textColor;
+            switch(riskLevel) {
+                case 'High':
+                    backgroundColor = '#ff6b6b';
+                    textColor = '#fff';
+                    break;
+                case 'Moderate':
+                    backgroundColor = '#ffd43b';
+                    textColor = '#333';
+                    break;
+                case 'Low':
+                    backgroundColor = '#51cf66';
+                    textColor = '#fff';
+                    break;
+            }
+            
+            // Update circle
+            riskCircle.style.background = backgroundColor;
+            riskPercentage.textContent = probability + '%';
+            riskPercentage.style.color = textColor;
+            riskLabel.textContent = riskLevel + ' Risk';
+            riskLabel.style.color = backgroundColor;
+        }
+
+        function updatePatientInfo(result) {
+            const patientName = document.getElementById('patient-name').value;
+            const patientAge = document.getElementById('patient-age').value;
+            
+            document.getElementById('patient-id').textContent = result.patient_id;
+            document.getElementById('patient-name-result').textContent = patientName;
+            document.getElementById('patient-age-result').textContent = patientAge + ' years';
+            document.getElementById('assessment-date').textContent = new Date().toLocaleDateString();
+        }
+
+        function updateSeverityAnalysis(result, probability) {
+            // Calculate severity components based on probability and clinical data
+            const tremorSeverity = parseInt(document.getElementById('tremor-severity').value);
+            const symptomsDuration = parseInt(document.getElementById('symptoms-duration').value);
+            
+            // Motor symptoms severity (based on tremor and overall probability)
+            const motorSeverity = Math.min(100, (tremorSeverity * 10) + (probability * 0.3));
+            
+            // Voice changes severity (based on probability)
+            const voiceSeverity = probability * 0.8;
+            
+            // Clinical factors severity (based on symptoms duration and family history)
+            const familyHistory = document.getElementById('family-history').value;
+            const clinicalSeverity = Math.min(100, (symptomsDuration * 2) + (familyHistory === 'Yes' ? 20 : 0) + (probability * 0.2));
+            
+            // Update severity bars with animation
+            animateSeverityBar('motor-severity', 'motor-value', motorSeverity);
+            animateSeverityBar('voice-severity', 'voice-value', voiceSeverity);
+            animateSeverityBar('clinical-severity', 'clinical-value', clinicalSeverity);
+        }
+
+        function animateSeverityBar(barId, valueId, targetValue) {
+            const bar = document.getElementById(barId);
+            const value = document.getElementById(valueId);
+            let currentValue = 0;
+            
+            const interval = setInterval(() => {
+                currentValue += 2;
+                if (currentValue >= targetValue) {
+                    currentValue = targetValue;
+                    clearInterval(interval);
+                }
+                
+                bar.style.width = currentValue + '%';
+                value.textContent = Math.round(currentValue) + '%';
+                
+                // Update bar color based on severity
+                if (currentValue > 70) {
+                    bar.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a52)';
+                } else if (currentValue > 40) {
+                    bar.style.background = 'linear-gradient(135deg, #ffd43b, #fcc419)';
+                } else {
+                    bar.style.background = 'linear-gradient(135deg, #51cf66, #40c057)';
+                }
+            }, 20);
+        }
+
+        function updatePrecautions(riskLevel) {
+            const precautionsContent = document.getElementById('precautions-content');
+            
+            let precautions = [];
+            
+            switch(riskLevel) {
+                case 'High':
+                    precautions = [
+                        { title: 'Immediate Action', text: 'Schedule urgent consultation with a neurologist within 1 week.' },
+                        { title: 'Daily Monitoring', text: 'Track symptoms multiple times daily and maintain detailed symptom diary.' },
+                        { title: 'Medication Review', text: 'Consult with doctor about potential medication adjustments.' },
+                        { title: 'Lifestyle Changes', text: 'Implement exercise routine and dietary changes as recommended.' },
+                        { title: 'Support Network', text: 'Inform family members and establish support system.' }
+                    ];
+                    break;
+                case 'Moderate':
+                    precautions = [
+                        { title: 'Medical Consultation', text: 'Schedule consultation with a neurologist within 2-4 weeks.' },
+                        { title: 'Regular Monitoring', text: 'Track symptoms weekly and maintain symptom diary.' },
+                        { title: 'Medication Check', text: 'Review current medications with healthcare provider.' },
+                        { title: 'Preventive Measures', text: 'Start preventive exercise and healthy lifestyle habits.' }
+                    ];
+                    break;
+                case 'Low':
+                    precautions = [
+                        { title: 'Routine Check', text: 'Schedule routine check-up with primary care physician.' },
+                        { title: 'Occasional Monitoring', text: 'Monitor for any changes in symptoms monthly.' },
+                        { title: 'Healthy Lifestyle', text: 'Maintain healthy diet and regular exercise routine.' },
+                        { title: 'Stay Informed', text: 'Learn about early warning signs and stay informed.' }
+                    ];
+                    break;
+            }
+            
+            precautionsContent.innerHTML = precautions.map(precaution => `
+                <div class="precaution-item">
+                    <div class="precaution-text">
+                        <strong>${precaution.title}:</strong> ${precaution.text}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function animateResults() {
+            const cards = document.querySelectorAll('.result-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 200);
+            });
+        }
+
+        function printResults() {
+            window.print();
+        }
+
+        function downloadResults() {
+            // Create a simple text report for download
+            const patientName = document.getElementById('patient-name').value;
+            const patientAge = document.getElementById('patient-age').value;
+            const riskLevel = document.getElementById('risk-label').textContent;
+            const probability = document.getElementById('risk-percentage').textContent;
+            
+            const report = `
+PARKINSON'S DISEASE ASSESSMENT REPORT
+====================================
+
+Patient Information:
+- Name: ${patientName}
+- Age: ${patientAge} years
+- Patient ID: ${document.getElementById('patient-id').textContent}
+- Assessment Date: ${document.getElementById('assessment-date').textContent}
+
+Assessment Results:
+- Risk Level: ${riskLevel}
+- Probability: ${probability}
+
+Severity Analysis:
+- Motor Symptoms: ${document.getElementById('motor-value').textContent}
+- Voice Changes: ${document.getElementById('voice-value').textContent}
+- Clinical Factors: ${document.getElementById('clinical-value').textContent}
+
+IMPORTANT: This is a screening assessment only. Please consult with qualified healthcare professionals for proper diagnosis and treatment.
+
+Generated on: ${new Date().toLocaleString()}
+            `;
+            
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `parkinsons_assessment_${patientName}_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function resetResults() {
+            // Hide results section
+            document.getElementById('results-section').style.display = 'none';
+            
+            // Reset form
+            document.getElementById('clinical-form').reset();
+            
+            // Clear all data
+            mriData = null;
+            audioData = null;
+            cameraPhotoData = null;
+            
+            // Clear previews
+            mriPreview.innerHTML = '';
+            cameraPhotoPreview.innerHTML = '';
+            audioPlayback.style.display = 'none';
+            audioControls.style.display = 'none';
+            
+            // Reset progress
+            progressBar.style.display = 'none';
+            progressFill.style.width = '0%';
+            resetProgressBtn.style.display = 'none';
+            
+            // Clear status
+            statusMessage.style.display = 'none';
+            
+            // Reset mode to both
+            currentMode = 'both';
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-mode="both"]').classList.add('active');
+            updateSectionVisibility();
+            
+            showStatus('System reset. Ready for new assessment.', 'info');
+        }
+    </script>
+</body>
+</html>

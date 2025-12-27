@@ -1,0 +1,12 @@
+flask
+flask-cors
+flask-sqlalchemy
+python-dotenv
+numpy
+opencv-python
+librosa
+tensorflow
+Pillow
+scikit-learn
+matplotlib
+joblib 
