@@ -1,4 +1,4 @@
-# Parkinson disease detection system using image and audio analyses-----
+# Parkinson disease detection system using image and audio analyses--
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from datetime import datetime
